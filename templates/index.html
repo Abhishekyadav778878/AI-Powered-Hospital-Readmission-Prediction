@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Hospital Readmission Prediction</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<!-- HERO SECTION -->
+<section class="hero-section">
+    <div class="overlay"></div>
+
+    <div class="container hero-content">
+
+        <div class="text-center mb-5">
+            <h1 class="display-4 fw-bold">
+                <i class="fas fa-hospital-user"></i>
+                AI-Powered Hospital Readmission Prediction
+            </h1>
+
+            <p class="lead">
+                Predict patient readmission risk using Machine Learning,
+                XGBoost Classification and Healthcare Analytics
+            </p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-5">
+
+            <div class="col-md-3 mb-3">
+                <div class="stats-card">
+                    <i class="fas fa-database"></i>
+                    <h5>Dataset</h5>
+                    <p>100K+ Records</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="stats-card">
+                    <i class="fas fa-brain"></i>
+                    <h5>Model</h5>
+                    <p>XGBoost</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="stats-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h5>Prediction</h5>
+                    <p>Multi-Class</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="stats-card">
+                    <i class="fas fa-cloud"></i>
+                    <h5>Deployment</h5>
+                    <p>Flask + Render</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- MAIN CARD -->
+        <div class="main-card">
+
+            <!-- Progress Bar -->
+            <div class="progress-container">
+
+                <div class="step active" id="step-indicator-1">
+                    <span>1</span>
+                    <small>Patient Info</small>
+                </div>
+
+                <div class="step" id="step-indicator-2">
+                    <span>2</span>
+                    <small>Clinical Info</small>
+                </div>
+
+                <div class="step" id="step-indicator-3">
+                    <span>3</span>
+                    <small>Medication</small>
+                </div>
+
+                <div class="step" id="step-indicator-4">
+                    <span>4</span>
+                    <small>Predict</small>
+                </div>
+
+            </div>
+
+            <!-- FORM START -->
+            <form action="/y_predict" method="POST" id="multiStepForm">
+
+                <!-- STEP 1 -->
+                <div class="form-step active" id="step1">
+
+                    <h3 class="section-title">
+                        <i class="fas fa-user"></i>
+                        Patient Demographics
+                    </h3>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Race</label>
+                            <select class="form-select" name="Race" required>
+                                <option value="">Select Race</option>
+                                <option value="Caucasian">Caucasian</option>
+                                <option value="AfricanAmerican">African American</option>
+                                <option value="Hispanic">Hispanic</option>
+                                <option value="Asian">Asian</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Gender</label>
+                            <select class="form-select" name="Gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Age Group</label>
+                            <select class="form-select" name="Age Group" required>
+                                <option value="">Select Age Group</option>
+                                <option value="0-10">0-10</option>
+                                <option value="10-20">10-20</option>
+                                <option value="20-30">20-30</option>
+                                <option value="30-40">30-40</option>
+                                <option value="40-50">40-50</option>
+                                <option value="50-60">50-60</option>
+                                <option value="60-70">60-70</option>
+                                <option value="70-80">70-80</option>
+                                <option value="80-90">80-90</option>
+                                <option value="90-100">90-100</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Weight Group</label>
+                            <select class="form-select" name="Weight" required>
+                                <option value="">Select Weight</option>
+                                <option value="0-25">0-25</option>
+                                <option value="25-50">25-50</option>
+                                <option value="50-75">50-75</option>
+                                <option value="75-100">75-100</option>
+                                <option value="100-125">100-125</option>
+                                <option value="125-150">125-150</option>
+                                <option value="150-175">150-175</option>
+                                <option value="175-200">175-200</option>
+                                <option value=">200">Above 200</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="text-end">
+                        <button type="button"
+                                class="btn btn-primary next-btn">
+                            Next Step
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                </div>
+                <!-- STEP 2 -->
+<div class="form-step" id="step2">
+
+    <h3 class="section-title">
+        <i class="fas fa-heartbeat"></i>
+        Clinical Information
+    </h3>
+
+    <div class="row">
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Admission Type</label>
+            <select class="form-select" name="Admission Type" required>
+                <option value="">Select Admission Type</option>
+                <option value="1">Emergency</option>
+                <option value="2">Urgent</option>
+                <option value="3">Elective</option>
+                <option value="Trauma Center">Trauma Center</option>
+                <option value="4">Newborn</option>
+                <option value="5">Other</option>
+                <option value="6">Unknown</option>
+            </select>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Discharge Type</label>
+            <select class="form-select" name="Discharge Type" required>
+                <option value="">Select Discharge Type</option>
+                <option value="1">Discharged Home</option>
+                <option value="2">Transferred Hospital</option>
+                <option value="3">Transferred SNF</option>
+                <option value="4">Transferred ICF</option>
+                <option value="5">Other Institution</option>
+                <option value="6">Home Health Service</option>
+                <option value="7">Left AMA</option>
+                <option value="8">Home IV Provider</option>
+                <option value="20">Rehab Facility</option>
+                <option value="21">Long Term Care</option>
+                <option value="22">Nursing Facility</option>
+                <option value="27">Expired</option>
+            </select>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Hospital Stay (Days)</label>
+            <input type="number"
+                   class="form-control"
+                   name="Time Spend Int Hospital"
+                   required>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Lab Procedures</label>
+            <input type="number"
+                   class="form-control"
+                   name="Number Of Lab Procedure"
+                   required>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Procedures</label>
+            <input type="number"
+                   class="form-control"
+                   name="Number Of Procedure"
+                   required>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Medications</label>
+            <input type="number"
+                   class="form-control"
+                   name="Number Of Medication"
+                   required>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Diagnosis 1</label>
+            <input type="number"
+                   class="form-control"
+                   name="Number Of Diagnosis1"
+                   required>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Diagnosis 2</label>
+            <input type="number"
+                   class="form-control"
+                   name="Number Of Diagnosis2"
+                   required>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Diagnosis 3</label>
+            <input type="number"
+                   class="form-control"
+                   name="Number Of Diagnosis3"
+                   required>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Total Diagnoses</label>
+            <input type="number"
+                   class="form-control"
+                   name="Number Of Diagnosis"
+                   required>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Glucose Serum</label>
+            <select class="form-select"
+                    name="Glucose Serum"
+                    required>
+                <option value="">Select</option>
+                <option value="0">Normal</option>
+                <option value="1">Greater than 200</option>
+            </select>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">A1C Result</label>
+            <select class="form-select"
+                    name="A1Cresult"
+                    required>
+                <option value="">Select</option>
+                <option value="0">Normal</option>
+                <option value="1">Abnormal</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+
+        <button type="button"
+                class="btn btn-secondary prev-btn">
+            <i class="fas fa-arrow-left"></i>
+            Previous
+        </button>
+
+        <button type="button"
+                class="btn btn-primary next-btn">
+            Next Step
+            <i class="fas fa-arrow-right"></i>
+        </button>
+
+    </div>
+
+</div>
+<!-- END STEP 2 -->
+<!-- STEP 3 -->
+<div class="form-step" id="step3">
+
+    <h3 class="section-title">
+        <i class="fas fa-pills"></i>
+        Medication Information
+    </h3>
+
+    <div class="row">
+
+        <!-- Metformin -->
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Metformin</label>
+            <select class="form-select" name="Metformin" required>
+                <option value="">Select</option>
+                <option value="0">No / Steady</option>
+                <option value="1">Up / Down</option>
+            </select>
+        </div>
+
+        <!-- Repaglinide -->
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Repaglinide</label>
+            <select class="form-select" name="Repaglinide" required>
+                <option value="">Select</option>
+                <option value="0">No / Steady</option>
+                <option value="1">Up / Down</option>
+            </select>
+        </div>
+
+        <!-- Nateglinide -->
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Nateglinide</label>
+            <select class="form-select" name="Nateglinide" required>
+                <option value="">Select</option>
+                <option value="0">No / Steady</option>
+                <option value="1">Up / Down</option>
+            </select>
+        </div>
+
+        <!-- Chlorpropamide -->
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Chlorpropamide</label>
+            <select class="form-select" name="Chlorpropamide" required>
+                <option value="">Select</option>
+                <option value="0">No / Steady</option>
+                <option value="1">Up / Down</option>
+            </select>
+        </div>
+
+        <!-- Glimepiride -->
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Glimepiride</label>
+            <select class="form-select" name="Glimepiride" required>
+                <option value="">Select</option>
+                <option value="0">No / Steady</option>
+                <option value="1">Up / Down</option>
+            </select>
+        </div>
+
+        <!-- Glipizide -->
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Glipizide</label>
+            <select class="form-select" name="Glipizide" required>
+                <option value="">Select</option>
+                <option value="0">No / Steady</option>
+                <option value="1">Up / Down</option>
+            </select>
+        </div>
+
+        <!-- Glyburide -->
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Glyburide</label>
+            <select class="form-select" name="Glyburide" required>
+                <option value="">Select</option>
+                <option value="0">No / Steady</option>
+                <option value="1">Up / Down</option>
+            </select>
+        </div>
+
+        <!-- Tolbutamide -->
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Tolbutamide</label>
+            <select class="form-select" name="Tolbutamide" required>
+                <option value="">Select</option>
+                <option value="0">No</option>
+                <option value="1">Steady</option>
+            </select>
+        </div>
+
+        <!-- Pioglitazone -->
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Pioglitazone</label>
+            <select class="form-select" name="Pioglitazone" required>
+                <option value="">Select</option>
+                <option value="0">No / Steady</option>
+                <option value="1">Up / Down</option>
+            </select>
+        </div>
+
+        <!-- Rosiglitazone -->
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Rosiglitazone</label>
+            <select class="form-select" name="Rosiglitazone" required>
+                <option value="">Select</option>
+                <option value="0">No / Steady</option>
+                <option value="1">Up / Down</option>
+            </select>
+        </div>
+
+        <!-- Acarbose -->
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Acarbose</label>
+            <select class="form-select" name="Acarbose" required>
+                <option value="">Select</option>
+                <option value="0">No / Steady</option>
+                <option value="1">Up / Down</option>
+            </select>
+        </div>
+
+        <!-- Miglitol -->
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Miglitol</label>
+            <select class="form-select" name="Miglitol" required>
+                <option value="">Select</option>
+                <option value="0">No / Steady</option>
+                <option value="1">Up / Down</option>
+            </select>
+        </div>
+
+        <!-- Troglitazone -->
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Troglitazone</label>
+            <select class="form-select" name="troglitazone" required>
+                <option value="">Select</option>
+                <option value="0">No</option>
+                <option value="1">Steady</option>
+            </select>
+        </div>
+
+        <!-- Tolazamide -->
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Tolazamide</label>
+            <select class="form-select" name="Tolazamide" required>
+                <option value="">Select</option>
+                <option value="0">No / Steady</option>
+                <option value="1">Up / Down</option>
+            </select>
+        </div>
+
+        <!-- Insulin -->
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Insulin</label>
+            <select class="form-select" name="Insulin" required>
+                <option value="">Select</option>
+                <option value="0">No / Steady</option>
+                <option value="1">Up / Down</option>
+            </select>
+        </div>
+
+        <!-- Glyburide Metformin -->
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Glyburide Metformin</label>
+            <select class="form-select" name="Glyburide_metformin" required>
+                <option value="">Select</option>
+                <option value="0">No / Steady</option>
+                <option value="1">Up / Down</option>
+            </select>
+        </div>
+
+        <!-- Glipizide Metformin -->
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Glipizide Metformin</label>
+            <select class="form-select" name="Glipizide_metformin" required>
+                <option value="">Select</option>
+                <option value="0">No</option>
+                <option value="1">Steady</option>
+            </select>
+        </div>
+
+        <!-- Diabetes Med -->
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Diabetes Medication</label>
+            <select class="form-select" name="DiabetesMed" required>
+                <option value="">Select</option>
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+
+        <button type="button" class="btn btn-secondary prev-btn">
+            <i class="fas fa-arrow-left"></i>
+            Previous
+        </button>
+
+        <button type="button" class="btn btn-success next-btn">
+            Review Prediction
+            <i class="fas fa-check-circle"></i>
+        </button>
+
+    </div>
+
+</div>
+<!-- END STEP 3 -->
+<!-- STEP 4 -->
+<div class="form-step" id="step4">
+
+    <div class="text-center">
+
+        <div class="review-card">
+
+            <i class="fas fa-clipboard-check review-icon"></i>
+
+            <h2>Review & Generate Prediction</h2>
+
+            <p>
+                Please review the entered information before
+                generating the prediction.
+            </p>
+
+            <div class="alert alert-info mt-4">
+                <strong>Model:</strong> XGBoost Classifier
+                <br>
+                <strong>Problem Type:</strong> Multi-Class Classification
+                <br>
+                <strong>Prediction:</strong> Hospital Readmission Risk
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+
+        <button type="button"
+                class="btn btn-secondary prev-btn">
+            <i class="fas fa-arrow-left"></i>
+            Previous
+        </button>
+
+        <button type="submit"
+                class="btn btn-lg btn-success predict-btn">
+
+            <i class="fas fa-brain"></i>
+            Predict Readmission Risk
+
+        </button>
+
+    </div>
+
+</div>
+<!-- END STEP 4 -->
+
+
+<!-- RESULT CARD -->
+{% if prediction_text %}
+
+<div class="result-section mt-5">
+
+    <div class="prediction-card">
+
+        <div class="prediction-header">
+
+            <i class="fas fa-chart-line"></i>
+            Prediction Result
+
+        </div>
+
+        <div class="prediction-body">
+
+            <h2>{{ prediction_text }}</h2>
+
+            {% if confidence %}
+            <div class="confidence-box">
+
+                <h5>Confidence Score</h5>
+
+                <div class="confidence-value">
+                    {{ confidence }}%
+                </div>
+
+            </div>
+            {% endif %}
+
+            <div class="recommendation-box">
+
+                <h4>
+                    <i class="fas fa-user-md"></i>
+                    Recommendation
+                </h4>
+
+                <ul>
+
+                    <li>
+                        Schedule timely follow-up appointments
+                    </li>
+
+                    <li>
+                        Monitor medication adherence closely
+                    </li>
+
+                    <li>
+                        Review glucose and diabetes management
+                    </li>
+
+                    <li>
+                        Encourage patient engagement and education
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+
+<!-- ABOUT PROJECT -->
+
+<section class="about-project mt-5">
+
+    <div class="row">
+
+        <div class="col-lg-12">
+
+            <div class="about-card">
+
+                <h2>
+                    <i class="fas fa-info-circle"></i>
+                    About This Project
+                </h2>
+
+                <p>
+
+                    This AI-powered healthcare application predicts
+                    patient readmission risk using Machine Learning
+                    and Healthcare Analytics.
+
+                </p>
+
+                <div class="tech-stack">
+
+                    <span class="badge bg-primary">Python</span>
+
+                    <span class="badge bg-success">Flask</span>
+
+                    <span class="badge bg-danger">XGBoost</span>
+
+                    <span class="badge bg-warning text-dark">
+                        Machine Learning
+                    </span>
+
+                    <span class="badge bg-info text-dark">
+                        Healthcare Analytics
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</form>
+
+</div>
+</div>
+</section>
+
+
+<!-- FOOTER -->
+
+<footer class="footer">
+
+    <div class="container text-center">
+
+        <h5>🌟 Developed by Abhishek Yadav</h5>
+
+        <p>
+            Data Scientist | Machine Learning Enthusiast |
+            Healthcare Analytics
+        </p>
+
+        <div class="social-links">
+
+            <a href="https://www.linkedin.com/in/abhishek-yadav-607783320/" target="_blank">
+                <i class="fab fa-linkedin"></i>
+            </a>
+
+            <a href="https://github.com/Abhishekyadav778878" target="_blank">
+                <i class="fab fa-github"></i>
+            </a>
+
+            <a href="https://portfolio-n4aw.onrender.com/" target="_blank">
+                <i class="fas fa-globe"></i>
+            </a>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<!-- LOADING SPINNER -->
+
+<div id="loadingOverlay">
+
+    <div class="loader-container">
+
+        <div class="spinner-border text-light"
+             role="status">
+        </div>
+
+        <h4 class="mt-3">
+            Generating Prediction...
+        </h4>
+
+    </div>
+
+</div>
+
+
+<!-- JAVASCRIPT -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>
